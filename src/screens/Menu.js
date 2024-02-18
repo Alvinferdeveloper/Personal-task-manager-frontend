@@ -12,12 +12,7 @@ import { useState } from "react";
 import SideBar from '../components/SideBar'
 import { sideBarSlidingIn } from "../Animations/sideBarAnimation";
 
-export default function Menu({ navigation }) {
-  const [isMenuOpened, setIsMenuOpened] = useState(false);
-
-  const toogleMenu = () => {
-    setIsMenuOpened((state) => !state);
-  };
+export default function Menu() {
   return (
     <>
       <StatusBar />
@@ -26,7 +21,7 @@ export default function Menu({ navigation }) {
         <View style={styles.nav}>
           <AntDesign name="bars" size={28} color="white" onPress={sideBarSlidingIn} />
         </View>
-        <SideBar toogleMenu={toogleMenu} isMenuOpened={isMenuOpened}/>
+        <SideBar/>
         <View style={styles.header}>
           <View>
             <Text>Hello Jhon</Text>

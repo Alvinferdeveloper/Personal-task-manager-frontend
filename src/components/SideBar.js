@@ -1,37 +1,9 @@
 import { StyleSheet, View, Text,Animated, Dimensions } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
-import { ViewXPosition, sideBarSlidingIn, sideBarSlidingOut } from "../Animations/sideBarAnimation";
-
-const SCREEN_WIDTH = Dimensions.get("window").width;
-
-export default function SideBar({toogleMenu, isMenuOpened}) {
-    const leftValue = new Animated.Value(0);
-
-    const sideBarSliding = () => {
-      Animated.timing(
-        leftValue,
-        {
-          toValue:-(SCREEN_WIDTH * 0.7), // 0.7 COMES FROM THE WITH OF THE VIEW
-          duration: 500,
-          useNativeDriver: true,
-        }
-      ).start();
-
-    };
-
-    const sideBarSliding2 = () => {
-        Animated.timing(
-            leftValue,
-            {
-              toValue: (SCREEN_WIDTH * 0.7),
-              duration: 500,
-              useNativeDriver: true,
-            }
-          ).start();
-        
-    }
+import { ViewXPosition, sideBarSlidingOut } from "../Animations/sideBarAnimation";
 
 
+export default function SideBar() {
   return (
     <Animated.View style={{...styles.container,transform:[{ translateX:ViewXPosition}]}}>
       <View style={styles.toogle_container}>
