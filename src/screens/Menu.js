@@ -7,12 +7,14 @@ import {
   StyleSheet,
   Image,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 import { AntDesign } from "@expo/vector-icons";
 import { useState } from "react";
+import SideBar from '../components/SideBar'
+import { sideBarSlidingIn } from "../Animations/sideBarAnimation";
 
 export default function Menu({ navigation }) {
-  const [isMenuOpened, setIsMenuOpened] = useState(true);
+  const [isMenuOpened, setIsMenuOpened] = useState(false);
+
   const toogleMenu = () => {
     setIsMenuOpened((state) => !state);
   };
@@ -22,37 +24,9 @@ export default function Menu({ navigation }) {
       <View style={styles.container}>
         <View style={styles.backdrop}></View>
         <View style={styles.nav}>
-          <AntDesign name="bars" size={28} color="white" onPress={toogleMenu} />
+          <AntDesign name="bars" size={28} color="white" onPress={sideBarSlidingIn} />
         </View>
-        {isMenuOpened ? (
-          <View
-            style={{
-              height: "100%",
-              position: "absolute",
-              width: "70%",
-              left: 0,
-              backgroundColor: "red",
-              zIndex: 20,
-            }}
-          >
-            <View style={ {
-    height: "7%",
-    width: "100%",
-    justifyContent: "center",
-    paddingLeft: 10,
-  }}>
-            <AntDesign
-              name="bars"
-              size={28}
-              color="white"
-              onPress={toogleMenu}
-            />
-            </View>
-            <Text>Hola</Text>
-          </View>
-        ) : (
-          <View></View>
-        )}
+        <SideBar toogleMenu={toogleMenu} isMenuOpened={isMenuOpened}/>
         <View style={styles.header}>
           <View>
             <Text>Hello Jhon</Text>
