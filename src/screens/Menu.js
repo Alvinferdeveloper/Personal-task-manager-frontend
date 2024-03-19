@@ -8,11 +8,16 @@ import {
   Image,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SideBar from '../components/SideBar'
 import { sideBarSlidingIn } from "../Animations/sideBarAnimation";
+import { useStore } from "../store/store";
 
 export default function Menu() {
+  const { categories, getCategories } = useStore();
+  useEffect(()=>{
+    getCategories();
+  },[])
   return (
     <>
       <StatusBar />
@@ -24,8 +29,8 @@ export default function Menu() {
         <SideBar/>
         <View style={styles.header}>
           <View>
-            <Text>Hello Jhon</Text>
-            <Text>Today you have 25 Task</Text>
+            <Text>Hello Jhon cena</Text>
+            <Text>Today you have 25 Task r</Text>
           </View>
           <View>
             <Image
@@ -37,6 +42,11 @@ export default function Menu() {
               height={100}
             ></Image>
           </View>
+        </View>
+        <View>
+          {
+            categories.map((category,index) => (<Text key={index}>{category.name}</Text>))
+          }
         </View>
       </View>
     </>
