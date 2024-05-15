@@ -1,15 +1,24 @@
-import { StyleSheet, View, Text,Animated, Dimensions } from "react-native";
+import { StyleSheet, View, Text,Animated } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { ViewXPosition, sideBarSlidingOut } from "../Animations/sideBarAnimation";
+import { useStore } from "../store/store";
+import { useNavigation } from "@react-navigation/native";
 
 
 export default function SideBar() {
+  const { logOut} = useStore();
+  const navigation = useNavigation()
+
+  const handleLogOut = ()=>{
+    logOut();
+    navigation.navigate("Login");
+  }
   return (
     <Animated.View style={{...styles.container,transform:[{ translateX:ViewXPosition}]}}>
       <View style={styles.toogle_container}>
         <AntDesign name="bars" size={28} color="white" onPress={sideBarSlidingOut} />
       </View>
-      <Text>Hola mundo</Text>
+      <Text onPress={handleLogOut}>Logout</Text>
     </Animated.View>
   );
 }
@@ -28,5 +37,6 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "center",
     paddingLeft: 10,
+    paddingTop:30
   },
 });

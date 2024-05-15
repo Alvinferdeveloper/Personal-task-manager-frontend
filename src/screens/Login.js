@@ -1,155 +1,87 @@
-import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { MaterialIcons } from "@expo/vector-icons";
-import z from "zod";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import InputController from "../components/InputController";
+import { useEffect, useState } from "react"; 
+import { TextInput } from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity, Keyboard } from "react-native";
 import { useStore } from "../store/store";
-import { useEffect } from "react";
 
-const formSchema = z.object({
-  name: z.string().min(3, { message: "se requieren almenos 3 caracteres" }),
-  lastName: z.string().min(3, { message: "se requieren almenos 3 caractes" }),
-  email: z.string().email({ message: "Asegurese de ingresar un email" }),
-  password: z
-    .string()
-    .regex(
-      new RegExp(
-        /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*.-]).{8,}$/
-      ),
-      { message: "Contasena demasiado debil" }
-    ),
-});
+export default function Login({ navigation}){
+    const [password, setPassword] = useState("");
+    const [ email, setEmail] = useState("");
+    const { error, authenticated, logIn, setErrorToNull } = useStore();
+    const handleSubmit =async ()=>{
+        await logIn(email,password);
+        Keyboard.dismiss();
+    }
+    useEffect(()=>{
+        if(!error && authenticated){
+            setEmail("");
+            setPassword("");
+            navigation.navigate("Menu");
+        }
+    },[error, authenticated]);
 
-export default function Login({ navigation }) {
-  const { handleSubmit, control } = useForm({
-    defaultValues: { name: "", lastName: "", email: "", password: "" },
-    resolver: zodResolver(formSchema),
-  });
-  const { setUser, error, authenticated } = useStore();
-  useEffect(()=>{
-    if(!error && authenticated)
-    navigation.navigate("Menu");
-  },[authenticated,error])
-  const onSubmit = async (datos) => {
-    setUser(datos);
-  };
-  return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={{ fontSize: 25, color: "white" }}>Welcome to formik</Text>
-      </View>
-      <View style={styles.form}>
-        <InputController
-          control={control}
-          name="name"
-          rules={{
-            required: { message: "Campo requerido" },
-            minLength: { value: 3, message: "Minimo 3 caracteres" },
-          }}
-          placeholder="Name"
-        />
-        <InputController
-          control={control}
-          name="lastName"
-          rules={{ required: true, minLength: 3 }}
-          placeholder="Last Name"
-        />
-        <InputController
-          control={control}
-          name="email"
-          rules={{
-            required: { message: "Campo requerido" },
-            minLength: { value: 3, message: "Minimo 3 caracteres" },
-          }}
-          placeholder="Email"
-        />
-        <InputController
-          control={control}
-          name="password"
-          rules={{
-            required: { message: "Campo requerido" },
-            minLength: { value: 3, message: "Minimo 3 caracteres" },
-          }}
-          placeholder="Password"
-        />
-      </View>
-      <View style={styles.controls}>
-        <TouchableOpacity
-          style={styles.controls__send}
-          activeOpacity={0.7}
-          onPress={handleSubmit(onSubmit)}
-        >
-          <Text style={{ fontSize: 16 }}>Send</Text>
-        </TouchableOpacity>
-       {
-        error && (
-          <View style={styles.errorContainer}>
-          <Text style={styles.error}>{error}</Text>
-          <MaterialIcons name="error" size={24} color="white" />
+    useEffect(()=>{
+        setErrorToNull();
+    },[email, password])
+    return (
+        <View style={styles.container}>
+            <View style={styles.form}>
+            <TextInput placeholder="Email" style={styles.textInput}
+                onChangeText={(text)=>{setEmail(text)}}
+                value={email}
+            />
+            <TextInput placeholder="Password" secureTextEntry={true} style={styles.textInput}
+                onChangeText={(text)=>setPassword(text)}
+                value={password}
+            />
+            { error && <View style={styles.errorAlert}><Text style={{color:"white"}}>{error}</Text></View> }
+            <TouchableOpacity activeOpacity={0.7} style={styles.submit} onPress={handleSubmit}>
+                <Text style={{fontSize:17,color:"white"}}>Submit</Text>
+            </TouchableOpacity>
+            </View>
         </View>
-        )
-       }
-      </View>
-    </View>
-  );
+    )
 }
 
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "blue",
-    alignItems: "center",
-  },
-  form: {
-    width: "80%",
-    height: "60%",
-    backgroundColor: "white",
-    borderRadius: 8,
-    justifyContent: "space-evenly",
-    alignItems: "center",
-  },
-  input: {
-    backgroundColor: "#EFEBEA",
-    width: "100%",
-    height: "80%",
-    borderRadius: 5,
-    paddingLeft: 8,
-  },
-  header: {
-    fontSize: 25,
-    color: "red",
-    height: "20%",
-    justifyContent: "center",
-  },
-  controls: {
-    height: "20%",
-    width: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  controls__send: {
-    backgroundColor: "#5FE863",
-    color: "white",
-    width: "80%",
-    height: 50,
-    borderRadius: 7,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  errorContainer: {
-    marginTop: 20,
-    width: "80%",
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
-    height: "30%",
-    borderRadius: 5,
-    backgroundColor: "red",
-  },
-  error: {
-    color: "white",
-    fontSize: 18,
-  },
+    container:{
+        flex: 1,
+        justifyContent:'center',
+        alignItems: 'center',
+        backgroundColor:"blue",
+    },
+    form:{
+        width:"80%",
+        minHeight:400,
+        height:"50%",
+        backgroundColor:"white",
+        borderRadius:8,
+        alignItems: 'center',
+        justifyContent:"space-evenly"
+    },
+    textInput:{
+        backgroundColor: "#EFEBEA",
+        width: "80%",
+        height: "12%",
+        borderColor:"black",
+        borderRadius: 5,
+        paddingLeft: 8,
+    },
+    submit:{
+        width:"80%",
+        backgroundColor:"green",
+        height:"10%",
+        borderRadius:8,
+        justifyContent:"center",
+        alignItems: 'center',
+    },
+
+    errorAlert:{
+        width:"80%",
+        height:"10%",
+        backgroundColor:"red",
+        borderRadius:8,
+        justifyContent:"center",
+        alignItems: 'center',
+    }
 });

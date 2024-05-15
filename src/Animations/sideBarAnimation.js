@@ -12,7 +12,7 @@ export const sideBarSlidingIn = () => {
 
 export const sideBarSlidingOut = () => {
   Animated.timing(ViewXPosition, {
-    toValue: -(SCREEN_WIDTH * 0.7), // 0.7 COMES FROM THE WITH OF THE VIEW
+    toValue: -(SCREEN_WIDTH * 0.7), // 0.7 COMES FROM THE WIDTH OF THE VIEW
     duration: 500,
     useNativeDriver: true,
   }).start();
